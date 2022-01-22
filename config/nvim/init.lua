@@ -33,12 +33,46 @@ require('packer').startup(
         use 'hrsh7th/cmp-cmdline'
         use 'hrsh7th/vim-vsnip'
 
+        use 'kyazdani42/nvim-web-devicons'
+
         use {'nvim-telescope/telescope.nvim',
-            requires = { {'nvim-lua/plenary.nvim'} }
+            requires = { {'nvim-lua/plenary.nvim'}, {'nvim-lua/popup.nvim'} }
         }
 
         use {'nvim-treesitter/nvim-treesitter',
             run = ':TSUpdate'
+        }
+
+        local rust_opts = {
+            -- rust-tools options
+            tools = {
+                autoSetHints = true,
+                hover_with_actions = true,
+                inlay_hints = {
+                    show_parameter_hints = false,
+                    parameter_hints_prefix = "",
+                    other_hints_prefix = "",
+                },
+            },
+
+            -- all the opts to send to nvim-lspconfig
+            -- these override the defaults set by rust-tools.nvim
+            -- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
+            server = {
+                -- on_attach is a callback called when the language server attachs to the buffer
+                -- on_attach = on_attach,
+                settings = {
+                    -- to enable rust-analyzer settings visit:
+                    -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
+                    ["rust-analyzer"] = {
+                        -- enable clippy on save
+                        checkOnSave = {
+                            command = "clippy"
+                        },
+                    }
+                }
+            },
+
         }
 
         use {'simrat39/rust-tools.nvim',
@@ -47,8 +81,15 @@ require('packer').startup(
                  require('rust-tools').setup({})
             end
         }
+ 
+        -- Tabnine (for linux only)
+        -- to work on Windows in Powershell, change 'install.sh' to 'install.ps1'
+        use {'tzachar/cmp-tabnine', 
+            after = 'nvim-cmp',
+            run = './install.sh',
+            requires = 'hrsh7th/nvim-cmp'
+        }
         
-        --require('packer').sync()
         require('lspconfig').pyright.setup({})
     end
 )
@@ -84,6 +125,7 @@ cmp.setup({
     { name = 'vsnip' },
     { name = 'path' },
     { name = 'buffer' },
+    { name = 'cmp_tabnine' },
   },
 })
 
