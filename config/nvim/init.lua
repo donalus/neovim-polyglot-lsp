@@ -35,6 +35,12 @@ require('packer').startup(
 
         use 'kyazdani42/nvim-web-devicons'
 
+        use {'nvim-lualine/lualine.nvim',
+            requires = { 'kyazdani42/nvim-web-devicons', opt = true }
+        }
+
+        use 'navarasu/onedark.nvim'
+
         use {'nvim-telescope/telescope.nvim',
             requires = { {'nvim-lua/plenary.nvim'}, {'nvim-lua/popup.nvim'} }
         }
@@ -78,7 +84,7 @@ require('packer').startup(
         use {'simrat39/rust-tools.nvim',
             after = 'nvim-lspconfig',
             config = function()
-                 require('rust-tools').setup({})
+                 require('rust-tools').setup(rust_opts)
             end
         }
  
@@ -89,45 +95,55 @@ require('packer').startup(
             run = './install.sh',
             requires = 'hrsh7th/nvim-cmp'
         }
+
+
+        -- Setup Things!
+        require('onedark').setup({
+            style = 'darker'
+        })
+        require('onedark').load()
+
+        require('lualine').setup({
+            options = { theme = 'onedark' }
+        })
         
         require('lspconfig').pyright.setup({})
+
+        -- Setup Completion
+        local cmp = require('cmp')
+        cmp.setup({
+            -- Enable LSP snippets
+            snippet = {
+                expand = function(args)
+                    vim.fn["vsnip#anonymous"](args.body)
+                end,
+            },
+            mapping = {
+                ['<C-p>'] = cmp.mapping.select_prev_item(),
+                ['<C-n>'] = cmp.mapping.select_next_item(),
+                -- Add tab support
+                ['<S-Tab>'] = cmp.mapping.select_prev_item(),
+                ['<Tab>'] = cmp.mapping.select_next_item(),
+                ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+                ['<C-f>'] = cmp.mapping.scroll_docs(4),
+                ['<C-Space>'] = cmp.mapping.complete(),
+                ['<C-e>'] = cmp.mapping.close(),
+                ['<CR>'] = cmp.mapping.confirm({
+                    behavior = cmp.ConfirmBehavior.Insert,
+                    select = true,
+                })
+            },
+            -- Installed sources
+            sources = {
+                { name = 'nvim_lsp' },
+                { name = 'vsnip' },
+                { name = 'path' },
+                { name = 'buffer' },
+                { name = 'cmp_tabnine' },
+            },
+        })
     end
 )
-
--- Setup Completion
-local cmp = require('cmp')
-cmp.setup({
-    -- Enable LSP snippets
-    snippet = {
-        expand = function(args)
-            vim.fn["vsnip#anonymous"](args.body)
-        end,
-    },
-    mapping = {
-        ['<C-p>'] = cmp.mapping.select_prev_item(),
-        ['<C-n>'] = cmp.mapping.select_next_item(),
-        -- Add tab support
-        ['<S-Tab>'] = cmp.mapping.select_prev_item(),
-        ['<Tab>'] = cmp.mapping.select_next_item(),
-        ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-        ['<C-f>'] = cmp.mapping.scroll_docs(4),
-        ['<C-Space>'] = cmp.mapping.complete(),
-        ['<C-e>'] = cmp.mapping.close(),
-        ['<CR>'] = cmp.mapping.confirm({
-            behavior = cmp.ConfirmBehavior.Insert,
-            select = true,
-        })
-},
-
-  -- Installed sources
-  sources = {
-    { name = 'nvim_lsp' },
-    { name = 'vsnip' },
-    { name = 'path' },
-    { name = 'buffer' },
-    { name = 'cmp_tabnine' },
-  },
-})
 
 -- Appearance
 vim.wo.relativenumber = true
