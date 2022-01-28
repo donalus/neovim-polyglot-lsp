@@ -169,3 +169,17 @@ vim.api.nvim_set_keymap('n', '<leader>fb', [[<cmd>lua require('telescope.builtin
 vim.api.nvim_set_keymap('n', '<leader>fh', [[<cmd>lua require('telescope.builtin').help_tags()<cr>]],
     {noremap = true, silent = true})
 
+-- Open diagnostics Windows
+-- 
+function LspDiagnosticsFocus()
+    vim.api.nvim_command('set eventignore=WinLeave')
+    vim.api.nvim_command('autocmd CursorMoved <buffer> ++once set eventignore=""')
+    vim.diagnostic.open_float(nil,
+        {focusable = true,
+         scope = 'line',
+         close_events = {"CursorMoved", "CursorMovedI", "BufHidden", "InsertCharPre", "WinLeave"}
+     })
+end
+
+vim.api.nvim_set_keymap('n', '<Leader>d', '<Cmd>lua LspDiagnosticsFocus()<CR>', {noremap = true, silent = true})
+
