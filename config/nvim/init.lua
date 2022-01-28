@@ -45,6 +45,8 @@ require('packer').startup(
             requires = { {'nvim-lua/plenary.nvim'}, {'nvim-lua/popup.nvim'} }
         }
 
+        use 'nvim-telescope/telescope-ui-select.nvim'
+
         use {'nvim-treesitter/nvim-treesitter',
             run = ':TSUpdate'
         }
@@ -108,6 +110,19 @@ require('packer').startup(
         })
         
         require('lspconfig').pyright.setup({})
+
+        require('telescope').setup({
+            extensions = {
+                ['ui-select'] = {
+                    require('telescope.themes').get_dropdown {
+                        -- what goes here
+                    }
+                }
+            }
+        })
+
+        require('telescope').load_extension('ui-select')
+
 
         -- Setup Completion
         local cmp = require('cmp')
