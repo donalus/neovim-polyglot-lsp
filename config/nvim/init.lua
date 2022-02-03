@@ -196,5 +196,5 @@ function LspDiagnosticsFocus()
      })
 end
 
-vim.api.nvim_set_keymap('n', '<Leader>d', '<Cmd>lua LspDiagnosticsFocus()<CR>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('n', '<Leader>i', '<Cmd>lua LspDiagnosticsFocus()<CR>', {noremap = true, silent = true})
 
