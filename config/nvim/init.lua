@@ -101,7 +101,10 @@ require('packer').startup(
 
         -- Setup Things!
         require('onedark').setup({
-            style = 'darker'
+            style = 'dark',
+            code_style = {
+                comments = 'bold'
+            }
         })
         require('onedark').load()
 
